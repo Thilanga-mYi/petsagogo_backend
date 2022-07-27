@@ -8,3 +8,7 @@ Route::prefix("auth")->group(function(){
     Route::post('signup',[AuthController::class,'signup']);
     Route::post('login',[AuthController::class,'login']);
 });
+
+Route::prefix("")->middleware("auth:api")->group(function (){
+
+});
