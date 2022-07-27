@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->string('tel')->nullable();
             $table->string('mobile');
+            $table->enum('mobile_verified', [1, 2])->default(2);
             $table->string('email')->unique();
+            $table->enum('email_verified', [1, 2])->default(2);
             $table->string('company_name')->nullable();
             $table->string('company_address')->nullable();
             $table->string('company_tel')->nullable();

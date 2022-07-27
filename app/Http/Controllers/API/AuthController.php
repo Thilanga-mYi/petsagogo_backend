@@ -32,7 +32,6 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            // Send Error
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
@@ -57,16 +56,24 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return $this->errorResponse(data: $validator->errors()->all());
         }
-        $user = User::where('email', $request->email)->first();
+        $user = $this->authInterface->signup($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $token = $user->createToken('Login Client')->plainTextToken;
-                return $this->successResponse(code: 200, data:['token'=>$token,'user'=>$user]);
+                return $this->successResponse(code: 200, data: ['token' => $token, 'user' => $user]);
             } else {
                 return $this->errorResponse(code: 422, data: 'Password mismatch');
             }
         } else {
             return $this->errorResponse(code: 422, data: 'User does not exist');
         }
+    }
+
+    public function emailVerify($encordedEmail){
+        
+    }
+
+    public function mobileVerify($encordedMobile){
+        
     }
 }
