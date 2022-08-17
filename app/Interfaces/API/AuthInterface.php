@@ -4,7 +4,7 @@ namespace App\Interfaces\API;
 
 interface AuthInterface{
     public function signup($data);
-    public function login($data);
+    public function login($email);
     public function sendEmailVerification($email);
     public function sendMobileVerification($mobile);
     public function resetPassword($data);

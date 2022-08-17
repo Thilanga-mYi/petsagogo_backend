@@ -56,16 +56,16 @@ class AuthController extends Controller
         if ($validator->fails()) {
             return $this->errorResponse(data: $validator->errors()->all());
         }
-        $user = $this->authInterface->signup($request->email);
+        $user = $this->authInterface->login($request->email);
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $token = $user->createToken('Login Client')->plainTextToken;
                 return $this->successResponse(code: 200, data: ['token' => $token, 'user' => $user]);
             } else {
-                return $this->errorResponse(code: 422, data: 'Password mismatch');
+                return $this->errorResponse(code: 422, data: 'Credentials mismatch');
             }
         } else {
-            return $this->errorResponse(code: 422, data: 'User does not exist');
+            return $this->errorResponse(code: 422, data: 'Credentials mismatch');
         }
     }
 
