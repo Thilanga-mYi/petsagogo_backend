@@ -60,6 +60,7 @@ class AuthController extends Controller
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $token = $user->createToken('Login Client')->plainTextToken;
+                $user['permissions']=User::getUserPermissions($user->usertype);
                 return $this->successResponse(code: 200, data: ['token' => $token, 'user' => $user]);
             } else {
                 return $this->errorResponse(code: 422, data: 'Credentials mismatch');

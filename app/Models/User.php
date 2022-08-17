@@ -44,4 +44,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public static function getUserPermissions($usertype)
+    {
+        return Permission::whereIn('id', UsertypePermissions::where('usertype', $usertype)->pluck('permission'))->get();
+    }
 }
