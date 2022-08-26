@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -60,7 +61,7 @@ class AuthController extends Controller
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 $token = $user->createToken('Login Client')->plainTextToken;
-                $user['permissions']=User::getUserPermissions($user->usertype);
+                $user['permissions'] = User::getUserPermissions($user->usertype);
                 return $this->successResponse(code: 200, data: ['token' => $token, 'user' => $user]);
             } else {
                 return $this->errorResponse(code: 422, data: 'Credentials mismatch');
@@ -71,11 +72,18 @@ class AuthController extends Controller
         }
     }
 
-    public function emailVerify($encordedEmail){
-        
+    public function verify()
+    {
+        $user = Auth::user();
+        $user['permissions'] = User::getUserPermissions($user->usertype);
+        return $this->successResponse(code: 200, data: ['user' => $user]);
     }
 
-    public function mobileVerify($encordedMobile){
-        
+    public function emailVerify($encordedEmail)
+    {
+    }
+
+    public function mobileVerify($encordedMobile)
+    {
     }
 }
