@@ -18,7 +18,7 @@ return new class extends Migration
             $table->String('name', 45);
             $table->String('image', 100);
             $table->date('dob');
-            $table->enum('gender', ['MALE', 'FEMALE']);
+            $table->enum('gender', [1, 2]);
             $table->String('species',100)->nullable();
             $table->String('breed', 45)->nullable();
             $table->enum('male_neuterated', [1, 2])->default(2);

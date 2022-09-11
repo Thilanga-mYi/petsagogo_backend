@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\EventsController;
+use App\Http\Controllers\GeneralSettingsController;
+use App\Http\Controllers\ServicesController;
+use App\Http\Controllers\StaffUserController;
+use App\Models\GeneralSettings;
+use App\Models\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -12,4 +18,16 @@ Route::prefix("auth")->group(function () {
 
 Route::prefix("user")->middleware("auth:sanctum")->group(function () {
     Route::post('verify', [AuthController::class, 'verify']);
+});
+
+Route::prefix("business-account")->middleware("auth:sanctum")->group(function () {
+    Route::post('enrollStaffUser', [StaffUserController::class, 'enrollStaffUser']);
+    Route::get('getAllStaffUsers', [StaffUserController::class, 'getAllStaffUsers']);
+    Route::post('enrollEvent', [EventsController::class, 'enrollEvent']);
+    Route::get('getAllEvents', [EventsController::class, 'getAllEvents']);
+    Route::post('enrollGeneralSettings', [GeneralSettingsController::class, 'enrollGeneralSettings']);
+    Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
+    Route::post('enrollServices', [ServicesController::class, 'enrollServices']);
+    Route::get('getAllServices', [ServicesController::class, 'getAllServices']);
+    Route::get('enrollServicesPayment', [ServicesController::class, 'enrollServicesPayment']);
 });

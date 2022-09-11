@@ -28,6 +28,7 @@ class User extends Authenticatable
         'dob',
         'name',
         'username',
+        'parent_user_id',
         'usertype',
         'tel',
         'email',

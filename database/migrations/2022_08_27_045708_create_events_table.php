@@ -23,7 +23,7 @@ return new class extends Migration
             $table->tinyInteger('pre_booking_type')->default(2);
             $table->integer('allocated_booking_count')->nullable();
             $table->String('message', 255)->nullable();
-            $table->integer('admin_approved_admin')->nullable();
+            $table->integer('approved_admin')->nullable();
             $table->String('admin_remark', 255)->nullable();
             $table->integer('status')->default(2);
             $table->timestamps();

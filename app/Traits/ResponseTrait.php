@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+
 trait ResponseTrait
 {
     public function errorResponse($data,$code=400)
