@@ -15,11 +15,12 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
             $table->String('name', 100);
-            $table->date('start_date');
-            $table->time('start_time');
-            $table->date('end_date');
-            $table->time('end_time');
+            $table->date('start_date')->nullable();
+            $table->time('start_time')->nullable();
+            $table->date('end_date')->nullable();
+            $table->time('end_time')->nullable();
             $table->tinyInteger('pre_booking_type')->default(2);
             $table->integer('allocated_booking_count')->nullable();
             $table->String('message', 255)->nullable();
