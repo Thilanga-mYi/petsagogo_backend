@@ -78,7 +78,6 @@ class ServicesController extends Controller
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
-
         try {
             $data=[];
 
