@@ -23,4 +23,9 @@ class Pets extends Model
     'note',
     'status'
   ];
+
+  public function getImageAttribute($value)
+  {
+    return asset('uploads/pets/' . $value);
+  }
 }
