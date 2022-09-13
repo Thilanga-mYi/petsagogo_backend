@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GeneralSettingsController;
@@ -34,6 +35,8 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     Route::get('enrollServicesPayment', [ServicesController::class, 'enrollServicesPayment']);
     Route::post('enrollPet', [PetsController::class, 'enrollPet']);
     Route::get('getBusinessAccountPets', [PetsController::class, 'getBusinessAccountPets']);
+    Route::get('getBusinessAccountPetsList', [PetsController::class, 'getBusinessAccountPetsList']);
     Route::post('enrollClient', [ClientController::class, 'enrollClient']);
     Route::get('getServiceIcons', [ServicesController::class, 'getServiceIcons']);
+    Route::post('enrollBusinessBooking', [BookingController::class, 'enrollBusinessBooking']);
 });
