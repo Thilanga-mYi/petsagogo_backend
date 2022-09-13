@@ -20,6 +20,7 @@ class ClientController extends Controller
     public function enrollClient(Request $request)
     {
         $validator = Validator::make($request->all(), [
+            'parent_user' => 'required|exists:users,id',
             'name' => 'required|string',
             'mobile' => 'required|string|min:10|max:11',
             'email' => 'required|email|unique:users',
@@ -35,6 +36,7 @@ class ClientController extends Controller
             DB::beginTransaction();
             $userDataObj = [
                 'usertype' => 3,
+                'parent_user_id' => $request->parent_user,
                 'name' => $request->name,
                 'email' => $request->email,
                 'mobile' => $request->mobile,
@@ -77,5 +79,21 @@ class ClientController extends Controller
             error_log($th);
             return $this->errorResponse(data: 'Something went wrong. Please try again');
         }
+    }
+
+    public function getActiveClients(Request $request)
+    {
+        error_log(json_encode($request->all()));
+
+        $validator = Validator::make($request->all(), [
+            'user' => 'required|numeric|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->errorResponse(data: $validator->errors()->all());
+        }
+
+        $clientObj = User::where('parent_user_id', $request->user)->where('status', 1)->with('getClientHasPets')->get();
+        return $this->successResponse(code: 200, data: $clientObj);
     }
 }
