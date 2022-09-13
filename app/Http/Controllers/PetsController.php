@@ -15,8 +15,6 @@ class PetsController extends Controller
     public function enrollPet(Request $request)
     {
 
-        error_log(json_encode($request->all()));
-
         $validator = Validator::make($request->all(), [
             'user' => 'required|numeric|exists:users,id',
             'owner' => 'required|numeric',
@@ -49,8 +47,6 @@ class PetsController extends Controller
             'status' => 1
         ];
 
-        error_log('--------------------------------');
-
         try {
             Pets::create($data);
         } catch (\Throwable $th) {
@@ -70,7 +66,11 @@ class PetsController extends Controller
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
-        $petsObj = Pets::where('user_id', $request->user)->where('status', 1)->get();
-        return $this->successResponse(code: 200, data: $petsObj);
+        return $this->successResponse(code: 200, data: Pets::where('user_id', $request->user)->where('status', 1)->get());
+    }
+
+    public function getBusinessAccountPetsList(Request $request)
+    {
+        return $this->successResponse(code: 200, data: Pets::where('status',1)->where('user_id',$request->user)->get());
     }
 }
