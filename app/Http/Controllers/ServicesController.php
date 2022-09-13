@@ -3,66 +3,94 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServiceHasPaymentSettings;
+use App\Models\ServiceIcon;
 use App\Models\Services;
+use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class ServicesController extends Controller
 {
+    use ResponseTrait;
+
     public function enrollServices(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
-            'icon' => 'required|numeric',
-        ]);
 
-        if ($validator->fails()) {
-            return $this->errorResponse(data: $validator->errors()->all());
+        try {
+            error_log(json_encode($request->all()));
+
+            $validator = Validator::make($request->all(), [
+                'user' => 'required|numeric|exists:users,id',
+                'name' => 'required|string',
+                'icon' => 'required|numeric',
+                'weekend_availibility' => 'required|numeric',
+                'date_time_availibility' => 'required|numeric',
+                'add_time_restriction_note' => 'nullable|string',
+                'selected_time_shift' => 'nullable|numeric',
+                'no_of_visit_availability' => 'required|numeric',
+                'no_of_visit_count' => 'nullable|numeric',
+                'message' => 'nullable|string',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorResponse(data: $validator->errors()->all());
+            }
+
+            $data = [
+                'user_id' => $request->user,
+                'name' => $request->name,
+                'icon' => $request->icon,
+                'date_time_availibility' => $request->date_time_availibility,
+                'weekend_availibility' => $request->weekend_availibility,
+                'no_of_visit_availability' => $request->no_of_visit_availability,
+            ];
+
+            if ($request->has('message') && $request->filled('message')) {
+                $data['message'] = $request->message;
+            }
+
+            if ($request->date_time_availibility == '1') {
+                $data['selected_time_shift'] = $request->selected_time_shift;
+                $data['add_time_restriction_note'] = $request->add_time_restriction_note;
+            }
+
+            if ($request->no_of_visit_availability == '1') {
+                $data['no_of_visit_count'] = $request->no_of_visit_count;
+            }
+
+            error_log(json_encode($data));
+
+            Services::create($data);
+
+            return $this->successResponse();
+        } catch (\Throwable $th) {
+            error_log($th);
         }
-
-        $data = [
-            'user_id' => $request->user,
-            'name' => $request->name,
-            'icon' => $request->icon,
-            'weekend_availibility' => $request->weekend_availability_status,
-            'date_time_availibility' => $request->date_time_avilability_status,
-            'add_time_restriction_note' => $request->add_time_restriction_note,
-            'no_of_visit_availability' => $request->no_of_visit_availability_status,
-            'no_of_visit_count' => $request->no_of_visit_count,
-            'message' => $request->message,
-        ];
-
-        $serviceObj = Services::create($data);
-        return $this->successResponse();
     }
 
     public function getAllServices(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'user' => 'required|numeri|exists:users,id',
+            'user' => 'required|numeric|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
-        $data = [];
-        $servicesObj = Services::where('user_id', $request->user)->with('paymentSettings');
+        try {
+            $data=[];
 
-        foreach ($servicesObj as $key => $service) {
-            $data[] = [
-                'name' => $service->name,
-                'icon' => $service->icon,
-                'weekend_availibility' => $service->weekend_availibility,
-                'date_time_availibility' => $service->date_time_availibility,
-                'add_time_restriction_note' => $service->add_time_restriction_note,
-                'no_of_visit_availability' => $service->no_of_visit_availability,
-                'no_of_visit_count' => $service->no_of_visit_count,
-                'message' => $service->message,
-            ];
+            foreach (Services::where('status', 1)->where('user_id', $request->user)->with('paymentSettings')->with('iconData')->get() as $key => $value) {
+                $value['image']=$value['iconData']['image'];
+                $data[]=$value;
+            }
+
+            return $this->successResponse(code: 200, data:$data );
+
+        } catch (\Throwable $th) {
+            error_log($th);
         }
-
-        return $this->successResponse(code: 200, data: ['servicesList' => $data]);
     }
 
     public function enrollServicesPayment(Request $request)
@@ -96,5 +124,10 @@ class ServicesController extends Controller
 
         $serivceHasPaymentObj = ServiceHasPaymentSettings::create($data);
         return $this->successResponse(code: 200, data: ['serivceHasPaymentObj' => $serivceHasPaymentObj]);
+    }
+
+    public function getServiceIcons(Request $request)
+    {
+        return $this->successResponse(code: 200, data: ServiceIcon::where('status', 1)->get());
     }
 }

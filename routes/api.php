@@ -36,4 +36,5 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     Route::get('getBusinessAccountPets', [PetsController::class, 'getBusinessAccountPets']);
     Route::post('enrollClient', [ClientController::class, 'enrollClient']);
     Route::get('getActiveClients', [ClientController::class, 'getActiveClients']);
+    Route::get('getServiceIcons', [ServicesController::class, 'getServiceIcons']);
 });
