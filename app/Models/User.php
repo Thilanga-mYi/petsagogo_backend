@@ -64,6 +64,6 @@ class User extends Authenticatable
 
     public function getClientHasPets()
     {
-        return $this->hasOne(Pets::class, 'owner_id', 'id');
+        return $this->hasMany(Pets::class, 'owner_id', 'id');
     }
 }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ServiceHasPaymentSettings;
-use App\Models\ServiceIcon;
 use App\Models\Services;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
+use App\Models\ServiceIcon;
 use Illuminate\Support\Facades\Validator;
 
 class ServicesController extends Controller
@@ -79,15 +79,21 @@ class ServicesController extends Controller
         }
 
         try {
-            $data=[];
+            $data = [];
 
-            foreach (Services::where('status', 1)->where('user_id', $request->user)->with('paymentSettings')->with('iconData')->get() as $key => $value) {
-                $value['image']=$value['iconData']['image'];
-                $data[]=$value;
+            // STATUS SHOULD BE CHANGED TO 1
+            $serviceRecords = Services::where('status', 2)
+                ->where('user_id', $request->user)
+                ->with('paymentSettings')
+                ->with('iconData')
+                ->get();
+
+            foreach ($serviceRecords as $key => $value) {
+                $value['image'] = $value['iconData']['image'];
+                $data[] = $value;
             }
 
-            return $this->successResponse(code: 200, data:$data );
-
+            return $this->successResponse(code: 200, data: $data);
         } catch (\Throwable $th) {
             error_log($th);
         }

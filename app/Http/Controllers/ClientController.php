@@ -51,7 +51,7 @@ class ClientController extends Controller
 
                 $image = $petObj['image'];  // your base64 encoded
                 $image = str_replace(' ', '+', $image);
-                $imageName =  Carbon::now()->format('YmdHmis') . '.' . 'png';
+                $imageName =  $key . Carbon::now()->format('YmdHmis') . '.' . 'png';
                 File::put(public_path() . '/uploads/pets/' . $imageName, base64_decode($image));
 
                 $petData = [
@@ -93,7 +93,7 @@ class ClientController extends Controller
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
-        $clientObj = User::where('parent_user_id', $request->user)->where('status', 1)->with('getClientHasPets')->get();
+        $clientObj = User::where('parent_user_id', $request->user)->where('status', 1)->with('getClientHasPets')->orderBy('name', 'ASC')->get();
         return $this->successResponse(code: 200, data: $clientObj);
     }
 }

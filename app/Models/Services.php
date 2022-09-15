@@ -32,4 +32,5 @@ class Services extends Model
     {
         return $this->hasOne(ServiceIcon::class,'id','icon');
     }
+    
 }

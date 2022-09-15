@@ -13,6 +13,6 @@ class ServiceIcon extends Model
 
     public function getImageAttribute($value)
     {
-        return asset('uploads/'.$value);
+        return asset('uploads/service_icons/'.$value);
     }
 }
