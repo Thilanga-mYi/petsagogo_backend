@@ -61,4 +61,9 @@ class User extends Authenticatable
     {
         return Permission::whereIn('id', UsertypePermissions::where('usertype', $usertype)->pluck('permission'))->get();
     }
+
+    public function getClientHasPets()
+    {
+        return $this->hasMany(Pets::class, 'owner_id', 'id');
+    }
 }

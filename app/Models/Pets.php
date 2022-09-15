@@ -26,6 +26,6 @@ class Pets extends Model
 
   public function getImageAttribute($value)
   {
-      return asset('uploads/pets/'.$value);
+    return asset('uploads/pets/' . $value);
   }
 }

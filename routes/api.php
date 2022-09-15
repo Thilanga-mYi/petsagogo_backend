@@ -37,6 +37,8 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     Route::get('getBusinessAccountPets', [PetsController::class, 'getBusinessAccountPets']);
     Route::get('getBusinessAccountPetsList', [PetsController::class, 'getBusinessAccountPetsList']);
     Route::post('enrollClient', [ClientController::class, 'enrollClient']);
+    Route::get('getActiveClients', [ClientController::class, 'getActiveClients']);
     Route::get('getServiceIcons', [ServicesController::class, 'getServiceIcons']);
     Route::post('enrollBusinessBooking', [BookingController::class, 'enrollBusinessBooking']);
+    Route::get('getBusinessAccountPendingActiveBookingList', [BookingController::class, 'getBusinessAccountPendingActiveBookingList']);
 });
