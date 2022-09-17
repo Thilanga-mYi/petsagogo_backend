@@ -18,14 +18,13 @@ return new class extends Migration
             $table->integer('user_id');
             $table->tinyInteger('same_day_booking')->default(2);
             $table->tinyInteger('weekend_bookings')->default(2);
-            $table->time('bookingday_closing_time')->nullable();
-            $table->integer('per_day_max_bookings')->nullable();
+            $table->string('booking_daily_closing_time')->nullable();
+            $table->integer('max_number_of_booking_per_day')->nullable();
             $table->double('notice_period_hrs')->nullable();
             $table->double('refund')->default(0);
-            $table->tinyInteger('gps_availability_status')->default(2);
-            $table->tinyInteger('booking_daily_closing_time')->default(2);
+            $table->tinyInteger('gps_status')->default(2);
             $table->string('birthday_message')->nullable();
-            $table->string('message')->nullable();
+            $table->string('booking_message')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

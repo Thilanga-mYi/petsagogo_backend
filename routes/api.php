@@ -26,19 +26,29 @@ Route::prefix("user")->middleware("auth:sanctum")->group(function () {
 Route::prefix("business-account")->middleware("auth:sanctum")->group(function () {
     Route::post('enrollStaffUser', [StaffUserController::class, 'enrollStaffUser']);
     Route::get('getAllStaffUsers', [StaffUserController::class, 'getAllStaffUsers']);
+
     Route::post('enrollEvent', [EventsController::class, 'enrollEvent']);
-    Route::get('getAllEvents', [EventsController::class, 'getAllEvents']);
-    Route::post('enrollGeneralSettings', [GeneralSettingsController::class, 'enrollGeneralSettings']);
-    Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
+    Route::get('getAllEvents', [EventsController::class, 'getAllEvents']);    
     Route::post('enrollServices', [ServicesController::class, 'enrollServices']);
+    
     Route::get('getAllServices', [ServicesController::class, 'getAllServices']);
     Route::get('enrollServicesPayment', [ServicesController::class, 'enrollServicesPayment']);
+    
     Route::post('enrollPet', [PetsController::class, 'enrollPet']);
     Route::get('getBusinessAccountPets', [PetsController::class, 'getBusinessAccountPets']);
     Route::get('getBusinessAccountPetsList', [PetsController::class, 'getBusinessAccountPetsList']);
+    Route::post('getPetDetails', [PetsController::class, 'getPetDetails']);
+    
     Route::post('enrollClient', [ClientController::class, 'enrollClient']);
     Route::get('getActiveClients', [ClientController::class, 'getActiveClients']);
+    
     Route::get('getServiceIcons', [ServicesController::class, 'getServiceIcons']);
     Route::post('enrollBusinessBooking', [BookingController::class, 'enrollBusinessBooking']);
-    Route::get('getBusinessAccountPendingActiveBookingList', [BookingController::class, 'getBusinessAccountPendingActiveBookingList']);
+    Route::get('getBusinessAccountPendingBookingList', [BookingController::class, 'getBusinessAccountPendingBookingList']);
+    
+    Route::post('enrollStaffUser', [StaffUserController::class, 'enrollStaffUser']);
+    Route::get('getStaffUsers', [StaffUserController::class, 'getStaffUsers']);
+    
+    Route::post('enrollGeneralSettings', [GeneralSettingsController::class, 'enrollGeneralSettings']);
+    Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
 });

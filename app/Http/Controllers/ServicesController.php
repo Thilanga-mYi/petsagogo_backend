@@ -13,6 +13,8 @@ class ServicesController extends Controller
 {
     use ResponseTrait;
 
+    #STATUS: 2 = Save Without Payment, 1: Update with Adding Payment, 3: Deactivate 
+
     public function enrollServices(Request $request)
     {
 
@@ -43,6 +45,7 @@ class ServicesController extends Controller
                 'date_time_availibility' => $request->date_time_availibility,
                 'weekend_availibility' => $request->weekend_availibility,
                 'no_of_visit_availability' => $request->no_of_visit_availability,
+                'status' => 1 
             ];
 
             if ($request->has('message') && $request->filled('message')) {
@@ -57,8 +60,6 @@ class ServicesController extends Controller
             if ($request->no_of_visit_availability == '1') {
                 $data['no_of_visit_count'] = $request->no_of_visit_count;
             }
-
-            error_log(json_encode($data));
 
             Services::create($data);
 
@@ -132,7 +133,7 @@ class ServicesController extends Controller
         return $this->successResponse(code: 200, data: ['serivceHasPaymentObj' => $serivceHasPaymentObj]);
     }
 
-    public function getServiceIcons(Request $request)
+    public function getServiceIcons()
     {
         return $this->successResponse(code: 200, data: ServiceIcon::where('status', 1)->get());
     }

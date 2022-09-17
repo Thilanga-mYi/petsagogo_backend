@@ -71,6 +71,28 @@ class PetsController extends Controller
 
     public function getBusinessAccountPetsList(Request $request)
     {
-        return $this->successResponse(code: 200, data: Pets::where('status',1)->where('user_id',$request->user)->get());
+        return $this->successResponse(code: 200, data: Pets::where('status', 1)->where('user_id', $request->user)->get());
+    }
+
+    public function getPetDetails(Request $request)
+    {
+        error_log(json_encode($request->all()));
+
+        try {
+            $validator = Validator::make($request->all(), [
+                'pet_id' => 'required|numeric|exists:pets,id',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorResponse(data: $validator->errors()->all());
+            }
+
+            $petObj = Pets::find($request->pet_id);
+            error_log($petObj);
+            return $this->successResponse(code: 200, data: $petObj);
+
+        } catch (\Throwable $th) {
+            error_log($th);
+        }
     }
 }

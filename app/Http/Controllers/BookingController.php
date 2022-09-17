@@ -17,10 +17,11 @@ class BookingController extends Controller
 
     use ResponseTrait;
 
+    #1: Pending Staff Confirmation, 2 : Staff Confirmed, 3: Staff Confirmed, 4: Completed
+
     public function enrollBusinessBooking(Request $request)
     {
         error_log(json_encode($request->all()));
-        // error_log(Carbon::parse($request->time)->format('H:i:s A'));
 
         try {
             DB::beginTransaction();
@@ -28,9 +29,9 @@ class BookingController extends Controller
                 'user' => 'required|numeric|exists:users,id',
                 'service' => 'required|numeric|exists:services,id',
                 'from' => 'required',
-                'to' => 'required',
                 'day' => 'required',
-                'time' => 'required',
+                'startTime' => 'required',
+                'endTime' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -43,13 +44,12 @@ class BookingController extends Controller
                 'ref' => 'BUSBO' . str_pad(Booking::count(), 4, '0', STR_PAD_LEFT),
                 'start_date' => Carbon::parse($request->from),
                 'end_date' => Carbon::parse($request->to),
-                'time' => Carbon::parse($request->time)->format('H:i:s A'),
+                'start_time' => Carbon::parse($request->startTime)->format('H:i:s A'),
+                'end_time' => Carbon::parse($request->endTime)->format('H:i:s A'),
                 'visits' => $request->has('visits') ? $request->visits : 0,
                 'message' => $request->message,
                 'status' => 1
             ];
-
-            error_log(json_encode($data));
 
             $bookingObj = Booking::create($data);
 
@@ -78,9 +78,8 @@ class BookingController extends Controller
         }
     }
 
-    public function getBusinessAccountPendingActiveBookingList(Request $request)
+    public function getBusinessAccountPendingBookingList(Request $request)
     {
-        error_log('------------------------');
 
         try {
 
@@ -93,14 +92,12 @@ class BookingController extends Controller
             }
 
             $bookingRecords = Booking::where('business_account_id', $request->user)
-                ->where('status', '!=', 3)
-                ->where('status', '!=', 3)
+                ->where('status', 1) #Read Guide on Top 
                 ->with('getBookingService')
                 ->get();
 
-
-            $bookingHasPetsRecords = [];
-            $bookingHasDaysRecords = [];
+            $responseData = [];
+            $bookingData = [];
 
             foreach ($bookingRecords as $key => $bookingValue) {
 
@@ -116,17 +113,17 @@ class BookingController extends Controller
 
                 // GET BOOKING HAS DAYS
                 // $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->get();
-                $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->first();
-                $bookingHasPetsRecords[] = [
-                    $bookingHasDays,
-                ];
-            }
+                // $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->first();
+                // $bookingHasPetsRecords[] = [
+                //     $bookingHasDays,
+                // ];
 
-            $responseData[] = [
-                'bookingData' => $bookingRecords,
-                'bookingPetsData' => $bookingHasPetsRecords,
-                'bookingDaysData' => $bookingHasDaysRecords,
-            ];
+                $bookingData['bookingData'] = $bookingValue;
+                $bookingData['bookingData']['get_booking_has_pets'] = $bookingHasPets;
+                // $bookingData['bookingData']['get_booking_has_days'] = $bookingHasDays;
+
+                $responseData[] = ['data' => $bookingData];
+            }
 
             error_log(json_encode($responseData));
             return $this->successResponse(code: 200, data: $responseData);
