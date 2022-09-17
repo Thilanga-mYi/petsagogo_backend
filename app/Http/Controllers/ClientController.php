@@ -70,7 +70,6 @@ class ClientController extends Controller
                 ];
 
                 Pets::create($petData);
-
                 DB::commit();
             }
             return $this->successResponse(code: 200);
@@ -93,7 +92,7 @@ class ClientController extends Controller
             return $this->errorResponse(data: $validator->errors()->all());
         }
 
-        $clientObj = User::where('parent_user_id', $request->user)->where('status', 1)->with('getClientHasPets')->orderBy('name', 'ASC')->get();
+        $clientObj = User::where('usertype', 3)->where('parent_user_id', $request->user)->where('status', 1)->with('getClientHasPets')->orderBy('name', 'ASC')->get();
         return $this->successResponse(code: 200, data: $clientObj);
     }
 }

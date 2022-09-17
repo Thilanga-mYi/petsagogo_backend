@@ -15,7 +15,8 @@ class Booking extends Model
         'ref',
         'start_date',
         'end_date',
-        'time',
+        'start_time',
+        'end_time',
         'visits',
         'message',
         'status'

@@ -20,10 +20,11 @@ return new class extends Migration
             $table->string('ref');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
-            $table->string('time')->nullable();
+            $table->string('start_time')->nullable();
+            $table->string('end_time')->nullable();
             $table->integer('visits')->default(1);
             $table->string('message')->nullable();
-            $table->string('status')->default(1); #1 => None approved only lister / 2 => approved from staff / 3 => rejected from staff
+            $table->string('status')->default(1);
             $table->timestamps();
         });
     }
