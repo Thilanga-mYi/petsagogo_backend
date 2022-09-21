@@ -24,6 +24,7 @@ Route::prefix("user")->middleware("auth:sanctum")->group(function () {
 });
 
 Route::prefix("business-account")->middleware("auth:sanctum")->group(function () {
+    
     Route::post('enrollStaffUser', [StaffUserController::class, 'enrollStaffUser']);
     Route::get('getAllStaffUsers', [StaffUserController::class, 'getAllStaffUsers']);
 
@@ -45,6 +46,7 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     Route::get('getServiceIcons', [ServicesController::class, 'getServiceIcons']);
     Route::post('enrollBusinessBooking', [BookingController::class, 'enrollBusinessBooking']);
     Route::get('getBusinessAccountPendingBookingList', [BookingController::class, 'getBusinessAccountPendingBookingList']);
+    Route::get('getBookingDetail', [BookingController::class, 'getBookingDetail']);
     
     Route::post('enrollStaffUser', [StaffUserController::class, 'enrollStaffUser']);
     Route::get('getStaffUsers', [StaffUserController::class, 'getStaffUsers']);

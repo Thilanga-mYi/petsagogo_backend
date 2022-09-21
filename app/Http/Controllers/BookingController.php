@@ -132,4 +132,28 @@ class BookingController extends Controller
             return $this->errorResponse(data: "Something went wrong please try again");
         }
     }
+
+    public function getBookingDetail(Request $request)
+    {
+        try {
+            $bookingObj = Booking::where('id', $request->id)
+                ->with('getBookingService')
+                ->first();
+
+            // GET BOOKING HAS PETS
+            $bookingHasPets = BookingHasPets::where('booking_id', $bookingObj->id)
+                ->orderby('id', 'DESC')
+                ->with('getPet')
+                ->first();
+            $bookingHasDaysRecords[] = [
+                $bookingHasPets,
+            ];
+
+            $bookingData['bookingData'] = $bookingObj;
+            $bookingData['bookingData']['get_booking_has_pets'] = $bookingHasPets;
+            return $this->successResponse(code: 200, data: $bookingData);
+        } catch (\Throwable $th) {
+            error_log($th);
+        }
+    }
 }
