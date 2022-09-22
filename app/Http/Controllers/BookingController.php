@@ -28,10 +28,8 @@ class BookingController extends Controller
             $validator = Validator::make($request->all(), [
                 'user' => 'required|numeric|exists:users,id',
                 'service' => 'required|numeric|exists:services,id',
-                'from' => 'required',
-                'day' => 'required',
-                'startTime' => 'required',
-                'endTime' => 'required',
+                'selected_dates' => 'required',
+                'duration' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -41,11 +39,8 @@ class BookingController extends Controller
             $data = [
                 'business_account_id' => $request->user,
                 'service_id' => $request->service,
+                'duration' => $request->duration,
                 'ref' => 'BUSBO' . str_pad(Booking::count(), 4, '0', STR_PAD_LEFT),
-                'start_date' => Carbon::parse($request->from),
-                'end_date' => Carbon::parse($request->to),
-                'start_time' => Carbon::parse($request->startTime)->format('H:i:s A'),
-                'end_time' => Carbon::parse($request->endTime)->format('H:i:s A'),
                 'visits' => $request->has('visits') ? $request->visits : 0,
                 'message' => $request->message,
                 'status' => 1
@@ -62,14 +57,13 @@ class BookingController extends Controller
                 BookingHasPets::create($petData);
             }
 
-            $bookingDayData = [
-                'booking_id' => $bookingObj->id,
-                'day_id' => $request->day,
-                'start_time' => Carbon::parse($request->time)->format('H:i:s A'),
-                'status' => 1
-            ];
-
-            BookingHasDays::create($bookingDayData);
+            foreach ($request->selected_dates as $key => $date) {
+                BookingHasDays::create([
+                    'booking_id' => $bookingObj->id,
+                    'date' => $date,
+                    'status' => 1
+                ]);
+            }
             DB::commit();
 
             return $this->successResponse(data: "Booking Saved Successfully");
@@ -92,7 +86,7 @@ class BookingController extends Controller
             }
 
             $bookingRecords = Booking::where('business_account_id', $request->user)
-                ->where('status', 1) #Read Guide on Top 
+                ->where('status', 1) #Read Guide on Top
                 ->with('getBookingService')
                 ->get();
 
