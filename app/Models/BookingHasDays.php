@@ -11,8 +11,7 @@ class BookingHasDays extends Model
 
     protected $fillable = [
         'booking_id',
-        'day_id',
-        'start_time',
+        'date',
         'status'
     ];
 }

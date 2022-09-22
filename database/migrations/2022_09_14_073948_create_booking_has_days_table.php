@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('booking_has_days', function (Blueprint $table) {
             $table->id();
             $table->integer('booking_id');
-            $table->integer('day_id')->nullable();
-            $table->string('start_time')->nullable();
+            $table->date('date');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });

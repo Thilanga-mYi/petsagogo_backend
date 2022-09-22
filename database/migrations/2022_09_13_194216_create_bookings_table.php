@@ -18,10 +18,7 @@ return new class extends Migration
             $table->integer('business_account_id');
             $table->integer('service_id');
             $table->string('ref');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->string('start_time')->nullable();
-            $table->string('end_time')->nullable();
+            $table->string('duration')->nullable();
             $table->integer('visits')->default(1);
             $table->string('message')->nullable();
             $table->string('status')->default(1);

@@ -13,10 +13,7 @@ class Booking extends Model
         'business_account_id',
         'service_id',
         'ref',
-        'start_date',
-        'end_date',
-        'start_time',
-        'end_time',
+        'duration',
         'visits',
         'message',
         'status'
