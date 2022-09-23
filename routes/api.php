@@ -53,4 +53,6 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     
     Route::post('enrollGeneralSettings', [GeneralSettingsController::class, 'enrollGeneralSettings']);
     Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
+    
+    Route::post('enrollServicePayment', [ServicesController::class, 'enrollServicePayment']);
 });
