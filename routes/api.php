@@ -9,8 +9,6 @@ use App\Http\Controllers\PetsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\StaffUserController;
 use App\Models\GeneralSettings;
-use App\Models\Services;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix("auth")->group(function () {
