@@ -14,6 +14,7 @@ class Booking extends Model
         'service_id',
         'ref',
         'duration',
+        'picking_time',
         'visits',
         'message',
         'status'

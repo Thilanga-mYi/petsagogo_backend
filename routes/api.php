@@ -9,8 +9,6 @@ use App\Http\Controllers\PetsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\StaffUserController;
 use App\Models\GeneralSettings;
-use App\Models\Services;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix("auth")->group(function () {
@@ -53,4 +51,6 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     
     Route::post('enrollGeneralSettings', [GeneralSettingsController::class, 'enrollGeneralSettings']);
     Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
+    
+    Route::post('enrollServicePayment', [ServicesController::class, 'enrollServicePayment']);
 });

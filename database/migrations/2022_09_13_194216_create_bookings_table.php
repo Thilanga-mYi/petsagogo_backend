@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('service_id');
             $table->string('ref');
             $table->string('duration')->nullable();
+            $table->string('picking_time')->nullable();
             $table->integer('visits')->default(1);
             $table->string('message')->nullable();
             $table->string('status')->default(1);

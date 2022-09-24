@@ -7,6 +7,7 @@ use App\Models\Services;
 use App\Traits\ResponseTrait;
 use Illuminate\Http\Request;
 use App\Models\ServiceIcon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ServicesController extends Controller
@@ -45,7 +46,7 @@ class ServicesController extends Controller
                 'date_time_availibility' => $request->date_time_availibility,
                 'weekend_availibility' => $request->weekend_availibility,
                 'no_of_visit_availability' => $request->no_of_visit_availability,
-                'status' => 1 
+                'status' => 1
             ];
 
             if ($request->has('message') && $request->filled('message')) {
@@ -83,8 +84,7 @@ class ServicesController extends Controller
             $data = [];
 
             // STATUS SHOULD BE CHANGED TO 1
-            $serviceRecords = Services::where('status', 2)
-                ->where('user_id', $request->user)
+            $serviceRecords = Services::where('user_id', $request->user)
                 ->with('paymentSettings')
                 ->with('iconData')
                 ->get();
@@ -136,5 +136,53 @@ class ServicesController extends Controller
     public function getServiceIcons()
     {
         return $this->successResponse(code: 200, data: ServiceIcon::where('status', 1)->get());
+    }
+
+    public function enrollServicePayment(Request $request)
+    {
+
+        try {
+            DB::beginTransaction();
+
+            $validator = Validator::make($request->all(), [
+                'user' => 'required|numeric|exists:users,id',
+                'service' => 'required|numeric|exists:services,id',
+                'thirtymin' => 'required|numeric',
+                'onehour' => 'required|numeric',
+                'additional1hour' => 'required|numeric',
+                'additional1visit' => 'required|numeric',
+                'additional1pet' => 'required|numeric',
+                'pricePerService' => 'required|numeric',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorResponse(data: $validator->errors()->all());
+            }
+
+            $data = [
+                'user_id' => $request->user,
+                'service_id' => $request->service,
+                '30_min' => $request->thirtymin,
+                '1_hour' => $request->onehour,
+                'additional_hour_1' => $request->additional1hour,
+                'additional_visit_1' => $request->additional1visit,
+                'additional_pets_1' => $request->additional1pet,
+                'price_per_service' => $request->pricePerService,
+            ];
+
+            ServiceHasPaymentSettings::where('user_id', $request->user)
+                ->where('service_id', $request->service)
+                ->update(['status' => 2]);
+
+            $shpObj = ServiceHasPaymentSettings::create($data);
+            Services::where('id', $shpObj->service_id)->update(['status' => 1]);
+
+            DB::commit();
+
+            return $this->successResponse();
+        } catch (\Throwable $th) {
+            error_log($th);
+            return $this->errorResponse(data: "Unable to Save Data, Something went wrong...");
+        }
     }
 }

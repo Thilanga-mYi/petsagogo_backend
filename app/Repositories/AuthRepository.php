@@ -18,7 +18,8 @@ class AuthRepository implements AuthInterface
 
     public function login($email)
     {
-        return User::where('email', $email)->first();
+        error_log($email);
+        return User::where('email', $email)->orWhere('username', $email)->first();
     }
 
     public function resetPassword($data)
@@ -39,11 +40,11 @@ class AuthRepository implements AuthInterface
     public function emailVerify($encordedCode)
     {
         $decordedText = base64_decode($encordedCode);
-        $user=User::where('email',$decordedText)->where('email_verified',2)->first();
-        if($user){
-            User::where('email',$decordedText)->update(['email_verified'=>1]);
+        $user = User::where('email', $decordedText)->where('email_verified', 2)->first();
+        if ($user) {
+            User::where('email', $decordedText)->update(['email_verified' => 1]);
             return 1;
-        }else{
+        } else {
             return 2;
         }
     }
@@ -51,11 +52,11 @@ class AuthRepository implements AuthInterface
     public function mobileVerify($encordedCode)
     {
         $decordedText = base64_decode($encordedCode);
-        $user=User::where('mobile',$decordedText)->where('mobile_verified',2)->first();
-        if($user){
-            User::where('mobile',$decordedText)->update(['mobile_verified'=>1]);
+        $user = User::where('mobile', $decordedText)->where('mobile_verified', 2)->first();
+        if ($user) {
+            User::where('mobile', $decordedText)->update(['mobile_verified' => 1]);
             return 1;
-        }else{
+        } else {
             return 2;
         }
     }

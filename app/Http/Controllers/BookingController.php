@@ -30,6 +30,7 @@ class BookingController extends Controller
                 'service' => 'required|numeric|exists:services,id',
                 'selected_dates' => 'required',
                 'duration' => 'required',
+                'picking_time' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -40,6 +41,7 @@ class BookingController extends Controller
                 'business_account_id' => $request->user,
                 'service_id' => $request->service,
                 'duration' => $request->duration,
+                'picking_time' => $request->picking_time,
                 'ref' => 'BUSBO' . str_pad(Booking::count(), 4, '0', STR_PAD_LEFT),
                 'visits' => $request->has('visits') ? $request->visits : 0,
                 'message' => $request->message,
@@ -87,6 +89,7 @@ class BookingController extends Controller
 
             $bookingRecords = Booking::where('business_account_id', $request->user)
                 ->where('status', 1) #Read Guide on Top
+                ->orderby('created_at', 'DESC')
                 ->with('getBookingService')
                 ->get();
 
@@ -100,20 +103,13 @@ class BookingController extends Controller
                     ->orderby('id', 'DESC')
                     ->with('getPet')
                     ->first();
-                // $bookingHasDaysRecords
-                $bookingHasDaysRecords[] = [
-                    $bookingHasPets,
-                ];
 
                 // GET BOOKING HAS DAYS
-                // $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->get();
-                // $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->first();
-                // $bookingHasPetsRecords[] = [
-                //     $bookingHasDays,
-                // ];
+                $bookingHasDays = BookingHasDays::where('booking_id', $bookingValue->id)->get();
 
                 $bookingData['bookingData'] = $bookingValue;
                 $bookingData['bookingData']['get_booking_has_pets'] = $bookingHasPets;
+                $bookingData['bookingData']['get_booking_has_days'] = $bookingHasDays;
                 // $bookingData['bookingData']['get_booking_has_days'] = $bookingHasDays;
 
                 $responseData[] = ['data' => $bookingData];
