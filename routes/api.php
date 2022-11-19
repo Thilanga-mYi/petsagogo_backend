@@ -5,6 +5,7 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\GeneralSettingsController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PetsController;
 use App\Http\Controllers\ServicesController;
 use App\Http\Controllers\StaffUserController;
@@ -53,4 +54,10 @@ Route::prefix("business-account")->middleware("auth:sanctum")->group(function ()
     Route::get('getGeneralSettings', [GeneralSettingsController::class, 'getGeneralSettings']);
     
     Route::post('enrollServicePayment', [ServicesController::class, 'enrollServicePayment']);
+    
+    Route::post('enrollBookingStaff', [BookingController::class, 'enrollBookingStaff']);
+    Route::post('deleteBooking', [BookingController::class, 'deleteBooking']);
+    
 });
+
+Route::post('getLocations', [LocationController::class, 'suggetions']);

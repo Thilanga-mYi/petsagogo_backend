@@ -85,9 +85,13 @@ class ServicesController extends Controller
 
             // STATUS SHOULD BE CHANGED TO 1
             $serviceRecords = Services::where('user_id', $request->user)
-                ->with('paymentSettings')
+                ->with(['paymentSettings' => function ($query) {
+                    $query->where('status', 1)->first();
+                }])
                 ->with('iconData')
                 ->get();
+
+            error_log(json_encode($serviceRecords));
 
             foreach ($serviceRecords as $key => $value) {
                 $value['image'] = $value['iconData']['image'];

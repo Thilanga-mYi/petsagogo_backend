@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\BookingHasDays;
 use App\Models\BookingHasPets;
+use App\Models\BookingHasStaff;
 use App\Models\Pets;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ class BookingController extends Controller
 
     use ResponseTrait;
 
-    #1: Pending Staff Confirmation, 2 : Staff Confirmed, 3: Staff Confirmed, 4: Completed
+    #2: Pending Staff Confirmation, 1 : Staff Confirmed, 3: Staff Confirmed, 4: Completed
 
     public function enrollBusinessBooking(Request $request)
     {
@@ -45,7 +46,7 @@ class BookingController extends Controller
                 'ref' => 'BUSBO' . str_pad(Booking::count(), 4, '0', STR_PAD_LEFT),
                 'visits' => $request->has('visits') ? $request->visits : 0,
                 'message' => $request->message,
-                'status' => 1
+                'status' => 2
             ];
 
             $bookingObj = Booking::create($data);
@@ -88,7 +89,7 @@ class BookingController extends Controller
             }
 
             $bookingRecords = Booking::where('business_account_id', $request->user)
-                ->where('status', 1) #Read Guide on Top
+                ->where('status', 2) #Read Guide on Top
                 ->orderby('created_at', 'DESC')
                 ->with('getBookingService')
                 ->get();
@@ -115,7 +116,6 @@ class BookingController extends Controller
                 $responseData[] = ['data' => $bookingData];
             }
 
-            error_log(json_encode($responseData));
             return $this->successResponse(code: 200, data: $responseData);
         } catch (\Throwable $th) {
             error_log($th);
@@ -146,4 +146,49 @@ class BookingController extends Controller
             error_log($th);
         }
     }
+
+    public function enrollBookingStaff(Request $request)
+    {
+        error_log(json_encode($request->all()));
+
+        try {
+            foreach ($request->booking_obj as $key => $booking) {
+                $bookingHasStaff_data = [
+                    'business_account_id' => $request->parent_user,
+                    'staff_id' => $request->staff_id,
+                    'booking_id' => $booking,
+                    'status' => 1,
+                ];
+
+                BookingHasStaff::create($bookingHasStaff_data);
+                Booking::where('id', $booking)->update(['status' => 1]);
+            }
+            return $this->successResponse(code: 200);
+        } catch (\Throwable $th) {
+            error_log($th);
+        }
+    }
+
+    public function deleteBooking(Request $request)
+    {
+        error_log('INININININININININ');
+        error_log(json_encode($request->all()));
+        try {
+            $validator = Validator::make($request->all(), [
+                'user' => 'required|numeric|exists:users,id',
+                'booking_id' => 'required|numeric|exists:bookings,id',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->errorResponse(data: $validator->errors()->all());
+            }
+
+            Booking::where('id', $request->booking_id)->update(['status' => 4]);
+            return $this->successResponse(code: 200);
+
+        } catch (\Throwable $th) {
+            error_log($th);
+        }
+    }
+
 }
